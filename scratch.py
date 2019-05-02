@@ -567,25 +567,27 @@ nx.draw(G_e_r)
 plt.show()
 L1 = laplacian_matrix(G_e_r)
 L1NM = L1.todense()'''
-G_watts_strog = watts_strogatz_graph(30, 6, 0.3, seed)
+s = 30
+G_watts_strog = watts_strogatz_graph(s, 10, 0.3, seed)
 nx.draw(G_watts_strog)
 plt.show()
 L2 = laplacian_matrix(G_watts_strog)
 L2NM = L2.todense()
 N = 200
 betas, Entropy = [0]*N,[0]*N
+A = [0]*s
 for beta in numpy.arange(N+1):
     '''L1NM_exp = scipy.linalg.expm(-beta * L1NM)
     Z = numpy.trace(L1NM_exp)
     DM_L1NM_exp = L1NM_exp / Z
     Lambda_DM_L1NM_exp, Vectors_DM_L1NM_exp = numpy.linalg.eig(DM_L1NM_exp)'''
-    L2NM_exp = scipy.linalg.expm(-beta*L2NM/10)
+    beta_exp = numpy.exp((N*0.5 - beta)/20)
+    L2NM_exp = scipy.linalg.expm(-beta_exp*L2NM/10)
     Z = numpy.trace(L2NM_exp)
     DM_L2NM_exp = L2NM_exp / Z
     Lambda_DM_L2NM_exp, Vectors_DM_L2NM_exp = numpy.linalg.eig(DM_L2NM_exp)
-    A = [0]*10
     Sum_Lambda = 0
-    for i in range(10):
+    for i in range(len(A)):
         #real_lambda = numpy.real(Lambda_DM_L1NM_exp[i])
         real_lambda = numpy.real(Lambda_DM_L2NM_exp[i])
         if real_lambda < 0 or real_lambda ==0:
@@ -594,7 +596,7 @@ for beta in numpy.arange(N+1):
             A[i] = real_lambda * numpy.log(real_lambda) * (1/numpy.log(2))
         Sum_Lambda-=A[i]
         Sum_Lambda = numpy.real(Sum_Lambda)
-    betas[beta-1], Entropy[beta-1] = beta, Sum_Lambda
+    betas[beta-1], Entropy[beta-1] = beta_exp, Sum_Lambda
 '''fig = plt.figure()
 ax = fig.add_subplot(2, 1, 1)
 ax.set_xscale('log')
