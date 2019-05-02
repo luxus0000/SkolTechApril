@@ -567,15 +567,15 @@ nx.draw(G_e_r)
 plt.show()
 L1 = laplacian_matrix(G_e_r)
 L1NM = L1.todense()'''
-s = 30
-G_watts_strog = watts_strogatz_graph(s, 10, 0.3, seed)
+watts_strog_s = 30
+G_watts_strog = watts_strogatz_graph(watts_strog_s, 5, 0.02, seed)
 nx.draw(G_watts_strog)
 plt.show()
 L2 = laplacian_matrix(G_watts_strog)
 L2NM = L2.todense()
 N = 200
 betas, Entropy = [0]*N,[0]*N
-A = [0]*s
+A = [0]*watts_strog_s
 for beta in numpy.arange(N+1):
     '''L1NM_exp = scipy.linalg.expm(-beta * L1NM)
     Z = numpy.trace(L1NM_exp)
