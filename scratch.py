@@ -20,27 +20,159 @@ from numpy import linalg as LA
 """from .classic import empty_graph, path_graph, complete_graph
 from .degree_seq import degree_sequence_tree
 from collections import defaultdict"""
-"""
-__all__ = ['fast_gnp_random_graph',
-           'gnp_random_graph',
-           'dense_gnm_random_graph',
-           'gnm_random_graph',
-           'erdos_renyi_graph',
-           'binomial_graph',
-           'newman_watts_strogatz_graph',
-           'watts_strogatz_graph',
-           'connected_watts_strogatz_graph',
-           'random_regular_graph',
-           'barabasi_albert_graph',
-           'dual_barabasi_albert_graph',
-           'extended_barabasi_albert_graph',
-           'powerlaw_cluster_graph',
-           'random_lobster',
-           'random_shell_graph',
-           'random_powerlaw_tree',
-           'random_powerlaw_tree_sequence',
-           'random_kernel_graph']
-"""
+("\n"
+ "__all__ = ['fast_gnp_random_graph',\n"
+ "           'gnp_random_graph',\n"
+ "           'dense_gnm_random_graph',\n"
+ "           'gnm_random_graph',\n"
+ "           'erdos_renyi_graph',\n"
+ "           'binomial_graph',\n"
+ "           'newman_watts_strogatz_graph',\n"
+ "           'watts_strogatz_graph',\n"
+ "           'connected_watts_strogatz_graph',\n"
+ "           'random_regular_graph',\n"
+ "           'barabasi_albert_graph',\n"
+ "           'dual_barabasi_albert_graph',\n"
+ "           'extended_barabasi_albert_graph',\n"
+ "           'powerlaw_cluster_graph',\n"
+ "           'random_lobster',\n"
+ "           'random_shell_graph',\n"
+ "           'random_powerlaw_tree',\n"
+ "           'random_powerlaw_tree_sequence',\n"
+ "           'random_kernel_graph']\n"
+ "def eig(a):\n"
+ "    \"\"\"\n"
+ "    Compute the eigenvalues and right eigenvectors of a square array.\n"
+ "    Parameters\n"
+ "    ----------\n"
+ "    a : (..., M, M) array\n"
+ "        Matrices for which the eigenvalues and right eigenvectors will\n"
+ "        be computed\n"
+ "    Returns\n"
+ "    -------\n"
+ "    w : (..., M) array\n"
+ "        The eigenvalues, each repeated according to its multiplicity.\n"
+ "        The eigenvalues are not necessarily ordered. The resulting\n"
+ "        array will be of complex type, unless the imaginary part is\n"
+ "        zero in which case it will be cast to a real type. When `a`\n"
+ "        is real the resulting eigenvalues will be real (0 imaginary\n"
+ "        part) or occur in conjugate pairs\n"
+ "    v : (..., M, M) array\n"
+ "        The normalized (unit \"length\") eigenvectors, such that the\n"
+ "        column ``v[:,i]`` is the eigenvector corresponding to the\n"
+ "        eigenvalue ``w[i]``.\n"
+ "    Raises\n"
+ "    ------\n"
+ "    LinAlgError\n"
+ "        If the eigenvalue computation does not converge.\n"
+ "    See Also\n"
+ "    --------\n"
+ "    eigvals : eigenvalues of a non-symmetric array.\n"
+ "    eigh : eigenvalues and eigenvectors of a real symmetric or complex\n"
+ "           Hermitian (conjugate symmetric) array.\n"
+ "    eigvalsh : eigenvalues of a real symmetric or complex Hermitian\n"
+ "               (conjugate symmetric) array.\n"
+ "    Notes\n"
+ "    -----\n"
+ "    .. versionadded:: 1.8.0\n"
+ "    Broadcasting rules apply, see the `numpy.linalg` documentation for\n"
+ "    details.\n"
+ "    This is implemented using the _geev LAPACK routines which compute\n"
+ "    the eigenvalues and eigenvectors of general square arrays.\n"
+ "    The number `w` is an eigenvalue of `a` if there exists a vector\n"
+ "    `v` such that ``dot(a,v) = w * v``. Thus, the arrays `a`, `w`, and\n"
+ "    `v` satisfy the equations ``dot(a[:,:], v[:,i]) = w[i] * v[:,i]``\n"
+ "    for :math:`i \\in \\{0,...,M-1\\}`.\n"
+ "    The array `v` of eigenvectors may not be of maximum rank, that is, some\n"
+ "    of the columns may be linearly dependent, although round-off error may\n"
+ "    obscure that fact. If the eigenvalues are all different, then theoretically\n"
+ "    the eigenvectors are linearly independent. Likewise, the (complex-valued)\n"
+ "    matrix of eigenvectors `v` is unitary if the matrix `a` is normal, i.e.,\n"
+ "    if ``dot(a, a.H) = dot(a.H, a)``, where `a.H` denotes the conjugate\n"
+ "    transpose of `a`.\n"
+ "    Finally, it is emphasized that `v` consists of the *right* (as in\n"
+ "    right-hand side) eigenvectors of `a`.  A vector `y` satisfying\n"
+ "    ``dot(y.T, a) = z * y.T`` for some number `z` is called a *left*\n"
+ "    eigenvector of `a`, and, in general, the left and right eigenvectors\n"
+ "    of a matrix are not necessarily the (perhaps conjugate) transposes\n"
+ "    of each other.\n"
+ "    References\n"
+ "    ----------\n"
+ "    G. Strang, *Linear Algebra and Its Applications*, 2nd Ed., Orlando, FL,\n"
+ "    Academic Press, Inc., 1980, Various pp.\n"
+ "    Examples\n"
+ "    --------\n"
+ "    >>> from numpy import linalg as LA\n"
+ "    (Almost) trivial example with real e-values and e-vectors.\n"
+ "    >>> w, v = LA.eig(np.diag((1, 2, 3)))\n"
+ "    >>> w; v\n"
+ "    array([ 1.,  2.,  3.])\n"
+ "    array([[ 1.,  0.,  0.],\n"
+ "           [ 0.,  1.,  0.],\n"
+ "           [ 0.,  0.,  1.]])\n"
+ "    Real matrix possessing complex e-values and e-vectors; note that the\n"
+ "    e-values are complex conjugates of each other.\n"
+ "    >>> w, v = LA.eig(np.array([[1, -1], [1, 1]]))\n"
+ "    >>> w; v\n"
+ "    array([ 1. + 1.j,  1. - 1.j])\n"
+ "    array([[ 0.70710678+0.j        ,  0.70710678+0.j        ],\n"
+ "           [ 0.00000000-0.70710678j,  0.00000000+0.70710678j]])\n"
+ "    Complex-valued matrix with real e-values (but complex-valued e-vectors);\n"
+ "    note that a.conj().T = a, i.e., a is Hermitian.\n"
+ "    >>> a = np.array([[1, 1j], [-1j, 1]])\n"
+ "    >>> w, v = LA.eig(a)\n"
+ "    >>> w; v\n"
+ "    array([  2.00000000e+00+0.j,   5.98651912e-36+0.j]) # i.e., {2, 0}\n"
+ "    array([[ 0.00000000+0.70710678j,  0.70710678+0.j        ],\n"
+ "           [ 0.70710678+0.j        ,  0.00000000+0.70710678j]])\n"
+ "    Be careful about round-off error!\n"
+ "    >>> a = np.array([[1 + 1e-9, 0], [0, 1 - 1e-9]])\n"
+ "    >>> # Theor. e-values are 1 +/- 1e-9\n"
+ "    >>> w, v = LA.eig(a)\n"
+ "    >>> w; v\n"
+ "    array([ 1.,  1.])\n"
+ "    array([[ 1.,  0.],\n"
+ "           [ 0.,  1.]])\n"
+ "    \"\"\"\n"
+ "    a, wrap = _makearray(a)\n"
+ "    _assertRankAtLeast2(a)\n"
+ "    _assertNdSquareness(a)\n"
+ "    _assertFinite(a)\n"
+ "    t, result_t = _commonType(a)\n"
+ "\n"
+ "    extobj = get_linalg_error_extobj(_raise_linalgerror_eigenvalues_nonconvergence)\n"
+ "    signature = 'D->DD' if isComplexType(t) else 'd->DD'\n"
+ "    w, vt = _umath_linalg.eig(a, signature=signature, extobj=extobj)\n"
+ "\n"
+ "    if not isComplexType(t) and all(w.imag == 0.0):\n"
+ "        w = w.real\n"
+ "        vt = vt.real\n"
+ "        result_t = _realType(result_t)\n"
+ "    else:\n"
+ "        result_t = _complexType(result_t)\n"
+ "\n"
+ "    vt = vt.astype(result_t, copy=False)\n"
+ "    return w.astype(result_t, copy=False), wrap(vt)\n"
+ "if __name__ == '__main__':\n"
+ "    G = PrintGraph()\n"
+ "    G.add_node('foo')\n"
+ "    G.add_nodes_from('bar', weight=8)\n"
+ "    G.remove_node('b')\n"
+ "    G.remove_nodes_from('ar')\n"
+ "    print(\"Nodes in G: \", G.nodes(data=True))\n"
+ "    G.add_edge(0, 1, weight=10)\n"
+ "    print(\"Edges in G: \", G.edges(data=True))\n"
+ "    G.remove_edge(0, 1)\n"
+ "    G.add_edges_from(zip(range(0, 3), range(1, 4)), weight=10)\n"
+ "    print(\"Edges in G: \", G.edges(data=True))\n"
+ "    G.remove_edges_from(zip(range(0, 3), range(1, 4)))\n"
+ "    print(\"Edges in G: \", G.edges(data=True))\n"
+ "\n"
+ "    G = PrintGraph()\n"
+ "    nx.add_path(G, range(10))\n"
+ "    nx.add_star(G, range(9, 13))\n"
+ "    nx.draw(G)\n"
+ "    plt.show()\n")
 class PrintGraph(Graph):
     """
     Example subclass of the Graph class.
@@ -425,192 +557,67 @@ class LinAlgError(Exception):
         raise LinAlgError('Singular matrix')
     numpy.linalg.LinAlgError: Singular matrix
     """
-def eig(a):
-    """
-    Compute the eigenvalues and right eigenvectors of a square array.
-    Parameters
-    ----------
-    a : (..., M, M) array
-        Matrices for which the eigenvalues and right eigenvectors will
-        be computed
-    Returns
-    -------
-    w : (..., M) array
-        The eigenvalues, each repeated according to its multiplicity.
-        The eigenvalues are not necessarily ordered. The resulting
-        array will be of complex type, unless the imaginary part is
-        zero in which case it will be cast to a real type. When `a`
-        is real the resulting eigenvalues will be real (0 imaginary
-        part) or occur in conjugate pairs
-    v : (..., M, M) array
-        The normalized (unit "length") eigenvectors, such that the
-        column ``v[:,i]`` is the eigenvector corresponding to the
-        eigenvalue ``w[i]``.
-    Raises
-    ------
-    LinAlgError
-        If the eigenvalue computation does not converge.
-    See Also
-    --------
-    eigvals : eigenvalues of a non-symmetric array.
-    eigh : eigenvalues and eigenvectors of a real symmetric or complex
-           Hermitian (conjugate symmetric) array.
-    eigvalsh : eigenvalues of a real symmetric or complex Hermitian
-               (conjugate symmetric) array.
-    Notes
-    -----
-    .. versionadded:: 1.8.0
-    Broadcasting rules apply, see the `numpy.linalg` documentation for
-    details.
-    This is implemented using the _geev LAPACK routines which compute
-    the eigenvalues and eigenvectors of general square arrays.
-    The number `w` is an eigenvalue of `a` if there exists a vector
-    `v` such that ``dot(a,v) = w * v``. Thus, the arrays `a`, `w`, and
-    `v` satisfy the equations ``dot(a[:,:], v[:,i]) = w[i] * v[:,i]``
-    for :math:`i \\in \\{0,...,M-1\\}`.
-    The array `v` of eigenvectors may not be of maximum rank, that is, some
-    of the columns may be linearly dependent, although round-off error may
-    obscure that fact. If the eigenvalues are all different, then theoretically
-    the eigenvectors are linearly independent. Likewise, the (complex-valued)
-    matrix of eigenvectors `v` is unitary if the matrix `a` is normal, i.e.,
-    if ``dot(a, a.H) = dot(a.H, a)``, where `a.H` denotes the conjugate
-    transpose of `a`.
-    Finally, it is emphasized that `v` consists of the *right* (as in
-    right-hand side) eigenvectors of `a`.  A vector `y` satisfying
-    ``dot(y.T, a) = z * y.T`` for some number `z` is called a *left*
-    eigenvector of `a`, and, in general, the left and right eigenvectors
-    of a matrix are not necessarily the (perhaps conjugate) transposes
-    of each other.
-    References
-    ----------
-    G. Strang, *Linear Algebra and Its Applications*, 2nd Ed., Orlando, FL,
-    Academic Press, Inc., 1980, Various pp.
-    Examples
-    --------
-    >>> from numpy import linalg as LA
-    (Almost) trivial example with real e-values and e-vectors.
-    >>> w, v = LA.eig(np.diag((1, 2, 3)))
-    >>> w; v
-    array([ 1.,  2.,  3.])
-    array([[ 1.,  0.,  0.],
-           [ 0.,  1.,  0.],
-           [ 0.,  0.,  1.]])
-    Real matrix possessing complex e-values and e-vectors; note that the
-    e-values are complex conjugates of each other.
-    >>> w, v = LA.eig(np.array([[1, -1], [1, 1]]))
-    >>> w; v
-    array([ 1. + 1.j,  1. - 1.j])
-    array([[ 0.70710678+0.j        ,  0.70710678+0.j        ],
-           [ 0.00000000-0.70710678j,  0.00000000+0.70710678j]])
-    Complex-valued matrix with real e-values (but complex-valued e-vectors);
-    note that a.conj().T = a, i.e., a is Hermitian.
-    >>> a = np.array([[1, 1j], [-1j, 1]])
-    >>> w, v = LA.eig(a)
-    >>> w; v
-    array([  2.00000000e+00+0.j,   5.98651912e-36+0.j]) # i.e., {2, 0}
-    array([[ 0.00000000+0.70710678j,  0.70710678+0.j        ],
-           [ 0.70710678+0.j        ,  0.00000000+0.70710678j]])
-    Be careful about round-off error!
-    >>> a = np.array([[1 + 1e-9, 0], [0, 1 - 1e-9]])
-    >>> # Theor. e-values are 1 +/- 1e-9
-    >>> w, v = LA.eig(a)
-    >>> w; v
-    array([ 1.,  1.])
-    array([[ 1.,  0.],
-           [ 0.,  1.]])
-    """
-    a, wrap = _makearray(a)
-    _assertRankAtLeast2(a)
-    _assertNdSquareness(a)
-    _assertFinite(a)
-    t, result_t = _commonType(a)
-
-    extobj = get_linalg_error_extobj(
-        _raise_linalgerror_eigenvalues_nonconvergence)
-    signature = 'D->DD' if isComplexType(t) else 'd->DD'
-    w, vt = _umath_linalg.eig(a, signature=signature, extobj=extobj)
-
-    if not isComplexType(t) and all(w.imag == 0.0):
-        w = w.real
-        vt = vt.real
-        result_t = _realType(result_t)
-    else:
-        result_t = _complexType(result_t)
-
-    vt = vt.astype(result_t, copy=False)
-    return w.astype(result_t, copy=False), wrap(vt)
-"""
-if __name__ == '__main__':
-    G = PrintGraph()
-    G.add_node('foo')
-    G.add_nodes_from('bar', weight=8)
-    G.remove_node('b')
-    G.remove_nodes_from('ar')
-    print("Nodes in G: ", G.nodes(data=True))
-    G.add_edge(0, 1, weight=10)
-    print("Edges in G: ", G.edges(data=True))
-    G.remove_edge(0, 1)
-    G.add_edges_from(zip(range(0, 3), range(1, 4)), weight=10)
-    print("Edges in G: ", G.edges(data=True))
-    G.remove_edges_from(zip(range(0, 3), range(1, 4)))
-    print("Edges in G: ", G.edges(data=True))
-
-    G = PrintGraph()
-    nx.add_path(G, range(10))
-    nx.add_star(G, range(9, 13))
-    nx.draw(G)
-    plt.show()
-"""
 seed=numpy.random
 '''G_e_r  = erdos_renyi_graph(20,0.1, seed, False)
 nx.draw(G_e_r)
 plt.show()
 L1 = laplacian_matrix(G_e_r)
 L1NM = L1.todense()'''
-watts_strog_s = 50 #doesn't work for watts_strog_s >199; watts_strog_s - number of nodes
-G_watts_strog = watts_strogatz_graph(watts_strog_s, 2, 2, seed)
-nx.draw(G_watts_strog)
-plt.show()
-L2 = laplacian_matrix(G_watts_strog)
-L2NM = L2.todense()
+watts_strog_s = 100 #doesn't work for watts_strog_s >199; watts_strog_s - number of nodes
+#nx.draw(G_watts_strog)
+#plt.show()
+#L2NM = laplacian_matrix(watts_strogatz_graph(watts_strog_s, 6, 0, seed)).todense()
 N = 200 #N - number of betas
-betas, Entropy = [0]*N,[0]*N
-A = [0]*watts_strog_s
+betas, Entropy, A = [0]*N, [0]*N, [0]*watts_strog_s
+#E_M = [[0 for x in range(N)] for y in range(6)]
 log_watts_strog_s = numpy.log(watts_strog_s)/numpy.log(2) #This is needed for normalization
-N1 = N/20
+N1 = N/15
 N2 = N*0.5
-for beta in numpy.arange(N+1):
-    '''L1NM_exp = scipy.linalg.expm(-beta * L1NM)
-    Z = numpy.trace(L1NM_exp)
-    DM_L1NM_exp = L1NM_exp / Z
-    Lambda_DM_L1NM_exp, Vectors_DM_L1NM_exp = numpy.linalg.eig(DM_L1NM_exp)'''
-    beta_exp = numpy.exp((N2 - beta)/N1)
-    L2NM_exp = scipy.linalg.expm(-beta_exp*L2NM/10)
-    Z = numpy.trace(L2NM_exp)
-    DM_L2NM_exp = L2NM_exp / Z
-    Lambda_DM_L2NM_exp, Vectors_DM_L2NM_exp = numpy.linalg.eig(DM_L2NM_exp)
-    Sum_Lambda = 0
-    for i in range(len(A)):
-        #real_lambda = numpy.real(Lambda_DM_L1NM_exp[i])
-        real_lambda = numpy.real(Lambda_DM_L2NM_exp[i])
-        if real_lambda < 0 or real_lambda ==0:
-            A[i] = 0
-        else:
-            A[i] = real_lambda * numpy.log(real_lambda) * (1/numpy.log(2))
-        Sum_Lambda-=A[i]
-        Sum_Lambda = numpy.real(Sum_Lambda)
-    betas[beta-1], Entropy[beta-1] = beta_exp, Sum_Lambda/log_watts_strog_s
-'''fig = plt.figure()
-ax = fig.add_subplot(2, 1, 1)
-ax.set_xscale('log')
-pyplot.subplot(1,1,1)'''
-betas_inverse = [0]*200
-for i in range(len(betas)):
-    if betas[i] >0:
-        betas_inverse[i] = 1/betas[i]
-pyplot.plot(betas_inverse, Entropy, color='blue', lw=1)
+ns = [0, .25, .5, .75, 1]
+colors = ['blue', 'red', 'green', 'yellow', 'purple']
+for i in range(len(ns)):
+    na = ns[i]
+    L2NM = laplacian_matrix(watts_strogatz_graph(watts_strog_s, 6, na, seed)).todense()
+    for beta in numpy.arange(N+1):
+        '''L1NM_exp = scipy.linalg.expm(-beta * L1NM)
+        Z = numpy.trace(L1NM_exp)
+        DM_L1NM_exp = L1NM_exp / Z
+        Lambda_DM_L1NM_exp, Vectors_DM_L1NM_exp = numpy.linalg.eig(DM_L1NM_exp)'''
+        beta_exp = numpy.exp((N2 - beta)/N1)
+        L2NM_exp = scipy.linalg.expm(-beta_exp*L2NM/10)
+        Z = numpy.trace(L2NM_exp)
+        DM_L2NM_exp = L2NM_exp / Z
+        Lambda_DM_L2NM_exp, Vectors_DM_L2NM_exp = numpy.linalg.eig(DM_L2NM_exp)
+        Sum_Lambda = 0
+        for j in range(len(A)):
+            #real_lambda = numpy.real(Lambda_DM_L1NM_exp[i])
+            real_lambda = numpy.real(Lambda_DM_L2NM_exp[j])
+            if real_lambda < 0 or real_lambda ==0:
+                A[j] = 0
+            else:
+                A[j] = real_lambda * numpy.log(real_lambda) * (1/numpy.log(2))
+            Sum_Lambda-=A[j]
+            Sum_Lambda = numpy.real(Sum_Lambda)
+        betas[beta-1], Entropy[beta-1] = beta_exp, Sum_Lambda/log_watts_strog_s
+        #betas[beta - 1], E_M[i][beta - 1] = beta_exp, Sum_Lambda / log_watts_strog_s
+    '''fig = plt.figure()
+    ax = fig.add_subplot(2, 1, 1)
+    ax.set_xscale('log')
+    pyplot.subplot(1,1,1)'''
+    #E_M[i] = Entropy
+    betas_inverse = [0] * 200
+    for n in range(len(betas)):
+        if betas[n] > 0:
+            betas_inverse[n] = 1 / betas[n]
+    pyplot.plot(betas_inverse, Entropy, colors[i], lw=1)
+    #pyplot.plot(betas_inverse, Entropy, color='blue', lw=1)
 pyplot.xscale('log')
-pyplot.show()
+plt.show()
+#pyplot.plot(betas_inverse, E_M[0], color='blue', lw=1)
+#pyplot.plot(betas_inverse, E_M[1], color='red', lw=1)
+#pyplot.plot(betas_inverse, E_M[2], color='blue', lw=1)
+#pyplot.plot(betas_inverse, E_M[3], color='blue', lw=1)
+#pyplot.plot(betas_inverse, E_M[4], color='blue', lw=1)
 '''
 plt.plot(betas, Entropy)
 plt.show()'''
