@@ -567,21 +567,24 @@ nx.draw(G_e_r)
 plt.show()
 L1 = laplacian_matrix(G_e_r)
 L1NM = L1.todense()'''
-watts_strog_s = 30
-G_watts_strog = watts_strogatz_graph(watts_strog_s, 5, 0.02, seed)
+watts_strog_s = 50 #doesn't work for watts_strog_s >199; watts_strog_s - number of nodes
+G_watts_strog = watts_strogatz_graph(watts_strog_s, 2, 2, seed)
 nx.draw(G_watts_strog)
 plt.show()
 L2 = laplacian_matrix(G_watts_strog)
 L2NM = L2.todense()
-N = 200
+N = 200 #N - number of betas
 betas, Entropy = [0]*N,[0]*N
 A = [0]*watts_strog_s
+log_watts_strog_s = numpy.log(watts_strog_s)/numpy.log(2) #This is needed for normalization
+N1 = N/20
+N2 = N*0.5
 for beta in numpy.arange(N+1):
     '''L1NM_exp = scipy.linalg.expm(-beta * L1NM)
     Z = numpy.trace(L1NM_exp)
     DM_L1NM_exp = L1NM_exp / Z
     Lambda_DM_L1NM_exp, Vectors_DM_L1NM_exp = numpy.linalg.eig(DM_L1NM_exp)'''
-    beta_exp = numpy.exp((N*0.5 - beta)/20)
+    beta_exp = numpy.exp((N2 - beta)/N1)
     L2NM_exp = scipy.linalg.expm(-beta_exp*L2NM/10)
     Z = numpy.trace(L2NM_exp)
     DM_L2NM_exp = L2NM_exp / Z
@@ -596,7 +599,7 @@ for beta in numpy.arange(N+1):
             A[i] = real_lambda * numpy.log(real_lambda) * (1/numpy.log(2))
         Sum_Lambda-=A[i]
         Sum_Lambda = numpy.real(Sum_Lambda)
-    betas[beta-1], Entropy[beta-1] = beta_exp, Sum_Lambda
+    betas[beta-1], Entropy[beta-1] = beta_exp, Sum_Lambda/log_watts_strog_s
 '''fig = plt.figure()
 ax = fig.add_subplot(2, 1, 1)
 ax.set_xscale('log')
