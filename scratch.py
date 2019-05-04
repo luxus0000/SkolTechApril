@@ -5,8 +5,10 @@ import itertools
 import random
 import itertools
 import math
+from PIL import Image
 import numpy
 import scipy
+import matplotlib.pyplot
 import networkx as nx
 from copy import deepcopy
 import matplotlib.pyplot as plt
@@ -563,7 +565,7 @@ nx.draw(G_e_r)
 plt.show()
 L1 = laplacian_matrix(G_e_r)
 L1NM = L1.todense()'''
-watts_strog_s = 100 #doesn't work for watts_strog_s >199; watts_strog_s - number of nodes
+watts_strog_s = 199 #doesn't work for watts_strog_s >199; watts_strog_s - number of nodes
 #nx.draw(G_watts_strog)
 #plt.show()
 #L2NM = laplacian_matrix(watts_strogatz_graph(watts_strog_s, 6, 0, seed)).todense()
@@ -574,7 +576,9 @@ log_watts_strog_s = numpy.log(watts_strog_s)/numpy.log(2) #This is needed for no
 N1 = N/15
 N2 = N*0.5
 ns = [0, .25, .5, .75, 1]
+ns_random_regular_graph = [0, 50, 100, 150, 198]
 colors = ['blue', 'red', 'green', 'yellow', 'purple']
+"""
 for i in range(len(ns)):
     na = ns[i]
     L2NM = laplacian_matrix(watts_strogatz_graph(watts_strog_s, 6, na, seed)).todense()
@@ -609,9 +613,91 @@ for i in range(len(ns)):
     for n in range(len(betas)):
         if betas[n] > 0:
             betas_inverse[n] = 1 / betas[n]
-    pyplot.plot(betas_inverse, Entropy, colors[i], lw=1)
+    pyplot.plot(betas_inverse, Entropy, colors[i], lw=2)
     #pyplot.plot(betas_inverse, Entropy, color='blue', lw=1)
+"""
+"""
+for i in range(len(ns)):
+    na = ns[i]
+    L1NM = laplacian_matrix(erdos_renyi_graph (watts_strog_s,na, seed, False)).todense()
+    for beta in numpy.arange(N+1):
+        '''L1NM_exp = scipy.linalg.expm(-beta * L1NM)
+        Z = numpy.trace(L1NM_exp)
+        DM_L1NM_exp = L1NM_exp / Z
+        Lambda_DM_L1NM_exp, Vectors_DM_L1NM_exp = numpy.linalg.eig(DM_L1NM_exp)'''
+        beta_exp = numpy.exp((N2 - beta)/N1)
+        L1NM_exp = scipy.linalg.expm(-beta_exp*L1NM/10)
+        Z = numpy.trace(L1NM_exp)
+        DM_L1NM_exp = L1NM_exp / Z
+        Lambda_DM_L1NM_exp, Vectors_DM_L1NM_exp = numpy.linalg.eig(DM_L1NM_exp)
+        Sum_Lambda = 0
+        for j in range(len(A)):
+            #real_lambda = numpy.real(Lambda_DM_L1NM_exp[i])
+            real_lambda = numpy.real(Lambda_DM_L1NM_exp[j])
+            if real_lambda < 0 or real_lambda ==0:
+                A[j] = 0
+            else:
+                A[j] = real_lambda * numpy.log(real_lambda) * (1/numpy.log(2))
+            Sum_Lambda-=A[j]
+            Sum_Lambda = numpy.real(Sum_Lambda)
+        betas[beta-1], Entropy[beta-1] = beta_exp, Sum_Lambda/log_watts_strog_s
+        #betas[beta - 1], E_M[i][beta - 1] = beta_exp, Sum_Lambda / log_watts_strog_s
+    '''fig = plt.figure()
+    ax = fig.add_subplot(2, 1, 1)
+    ax.set_xscale('log')
+    pyplot.subplot(1,1,1)'''
+    #E_M[i] = Entropy
+    betas_inverse = [0] * 200
+    for n in range(len(betas)):
+        if betas[n] > 0:
+            betas_inverse[n] = 1 / betas[n]
+    pyplot.plot(betas_inverse, Entropy, colors[i], lw=2)
+    #pyplot.plot(betas_inverse, Entropy, color='blue', lw=1)
+"""
+for i in range(len(ns_random_regular_graph)):
+    na = ns_random_regular_graph[i]
+    L3NM = laplacian_matrix(nx.random_regular_graph(na, watts_strog_s, seed)).todense()
+    for beta in numpy.arange(N+1):
+        '''L1NM_exp = scipy.linalg.expm(-beta * L1NM)
+        Z = numpy.trace(L1NM_exp)
+        DM_L1NM_exp = L1NM_exp / Z
+        Lambda_DM_L1NM_exp, Vectors_DM_L1NM_exp = numpy.linalg.eig(DM_L1NM_exp)'''
+        beta_exp = numpy.exp((N2 - beta)/N1)
+        L3NM_exp = scipy.linalg.expm(-beta_exp*L3NM/10)
+        Z = numpy.trace(L3NM_exp)
+        DM_L3NM_exp = L3NM_exp / Z
+        Lambda_DM_L3NM_exp, Vectors_DM_L3NM_exp = numpy.linalg.eig(DM_L3NM_exp)
+        Sum_Lambda = 0
+        for j in range(len(A)):
+            #real_lambda = numpy.real(Lambda_DM_L3NM_exp[i])
+            real_lambda = numpy.real(Lambda_DM_L3NM_exp[j])
+            if real_lambda < 0 or real_lambda ==0:
+                A[j] = 0
+            else:
+                A[j] = real_lambda * numpy.log(real_lambda) * (1/numpy.log(2))
+            Sum_Lambda-=A[j]
+            Sum_Lambda = numpy.real(Sum_Lambda)
+        betas[beta-1], Entropy[beta-1] = beta_exp, Sum_Lambda/log_watts_strog_s
+        #betas[beta - 1], E_M[i][beta - 1] = beta_exp, Sum_Lambda / log_watts_strog_s
+    '''fig = plt.figure()
+    ax = fig.add_subplot(2, 1, 1)
+    ax.set_xscale('log')
+    pyplot.subplot(1,1,1)'''
+    #E_M[i] = Entropy
+    betas_inverse = [0] * 200
+    for n in range(len(betas)):
+        if betas[n] > 0:
+            betas_inverse[n] = 1 / betas[n]
+    pyplot.plot(betas_inverse, Entropy, colors[i], lw=2)
+    #pyplot.plot(betas_inverse, Entropy, color='blue', lw=1)
+
 pyplot.xscale('log')
+fig = matplotlib.pyplot.gcf()
+fig.set_size_inches(10, 6)
+fig.savefig('random_regular_graph.png', dpi=80)
+#fig.savefig('watts_strog.png', dpi=80)
+#pyplot.figure(num=None, figsize=(10, 8), dpi=100, facecolor='w', edgecolor='k')
+#plt.savefig('foo.png')
 plt.show()
 #pyplot.plot(betas_inverse, E_M[0], color='blue', lw=1)
 #pyplot.plot(betas_inverse, E_M[1], color='red', lw=1)
